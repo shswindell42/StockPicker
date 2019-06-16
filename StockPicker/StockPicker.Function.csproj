@@ -6,8 +6,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.24" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\StockPicker.Destinations\StockPicker.Destinations.csproj" />
     <ProjectReference Include="..\StockPicker.Sources\StockPicker.Sources.csproj" />
   </ItemGroup>
   <ItemGroup>

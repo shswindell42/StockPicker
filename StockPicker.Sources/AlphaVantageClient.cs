@@ -28,11 +28,13 @@ namespace StockPicker.Sources
         public async Task<TimeSeriesDailyAdjustedResponse> GetTimeSeriesDailyAdjusted(string ticker)
         {
             // build the URL to fetch data
-            NameValueCollection param = new NameValueCollection();
-            param.Add("function", "TIME_SERIES_DAILY_ADJUSTED");
-            param.Add("symbol", ticker);
-            param.Add("outputSize", _outputSize);
-            param.Add("apikey", _apiKey);
+            NameValueCollection param = new NameValueCollection
+            {
+                { "function", "TIME_SERIES_DAILY_ADJUSTED" },
+                { "symbol", ticker },
+                { "outputSize", _outputSize },
+                { "apikey", _apiKey }
+            };
 
             string[] array = (from key in param.AllKeys
                          from value in param.GetValues(key)

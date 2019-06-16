@@ -25,21 +25,21 @@ namespace StockPicker.Sources
                 // parse the metadata
                 t.Metadata = response["Meta Data"].ToString();
                 string symbol = response["Meta Data"]["2. Symbol"].ToString();
-                
+                t.Ticker = symbol;
                 // parse the quotes
                 foreach(var q in response["Time Series (Daily)"].Values())
                 {
                     Quote quote = new Quote();
                     quote.QuoteDate = Convert.ToDateTime(((JProperty)q.Parent).Name);
                     quote.Symbol = symbol;
-                    quote.Open = (decimal)q["1. open"];
-                    quote.High = (decimal)q["2. high"];
-                    quote.Low = (decimal)q["3. low"];
-                    quote.Close = (decimal)q["4. close"];
-                    quote.AdjustedClose = (decimal)q["5. adjusted close"];
-                    quote.Volume = (int)q["6. volume"];
-                    quote.Dividend = (decimal)q["7. dividend amount"];
-                    quote.SplitCoefficient = (decimal)q["8. split coefficient"];
+                    quote.Open = q["1. open"].Value<decimal>();
+                    quote.High = q["2. high"].Value<decimal>();
+                    quote.Low = q["3. low"].Value<decimal>();
+                    quote.Close = q["4. close"].Value<decimal>();
+                    quote.AdjustedClose = q["5. adjusted close"].Value<decimal>();
+                    quote.Volume = q["6. volume"].Value<int>();
+                    quote.Dividend = q["7. dividend amount"].Value<decimal>();
+                    quote.SplitCoefficient = q["8. split coefficient"].Value<decimal>();
 
                     // add quote to the list of quotes
                     t.Quotes.Add(quote);

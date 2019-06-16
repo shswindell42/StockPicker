@@ -12,7 +12,7 @@ namespace StockPicker.Destinations
         CloudBlobClient blobClient;
         CloudBlobContainer blobContainer;
 
-        AlphaVantageStorage(string connectionString, string containerName)
+        public AlphaVantageStorage(string connectionString, string containerName)
         {
             CloudStorageAccount.TryParse(connectionString, out storageAccount);
             blobClient = storageAccount.CreateCloudBlobClient();
@@ -21,19 +21,22 @@ namespace StockPicker.Destinations
 
         public async Task TimeSeriesDailyAdjustedLoad(TimeSeriesDailyAdjustedResponse timeSeriesDaily)
         {
-            // write the Quotes into a blob
-            foreach (Quote q in timeSeriesDaily.Quotes)
-            {
-                // serialize the quote
-                byte[] vs = q.Serialize();
+            // get a reference to the blob
+            string blobName = timeSeriesDaily.Ticker;
+            CloudBlockBlob cloudBlob = blobContainer.GetBlockBlobReference(blobName);
 
-                // generate the blob
-                string blobName = $"{q.Symbol}_{q.QuoteDate.ToString()}";
-                CloudBlockBlob cloudBlob = blobContainer.GetBlockBlobReference(blobName);
-                CloudBlobStream stream = await cloudBlob.OpenWriteAsync();
-                await stream.WriteAsync(vs, 0, vs.Length);
-                await stream.FlushAsync();
-            }
+            // generate the blob
+            CloudBlobStream stream = await cloudBlob.OpenWriteAsync();
+            
+            // serialize the quotes
+            byte[] vs = timeSeriesDaily.Serialize();
+
+            // write the Quotes into a blob
+            await stream.WriteAsync(vs, 0, vs.Length);
+
+            // commit the changes to azure storage
+            await stream.CommitAsync();
+
         }
     }
 }
